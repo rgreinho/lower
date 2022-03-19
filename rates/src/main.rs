@@ -1,11 +1,10 @@
 use chrono::NaiveDate;
 use color_eyre::{eyre::Report, Result};
 use lower::{load_rates, LendingRates};
-use std::path::PathBuf;
 
 #[tokio::main]
 async fn main() -> Result<(), Report> {
-    const RATE_FILE: &'static str = "lending-rates.json";
+    const RATE_FILE: &str = "lending-rates.json";
 
     // Load the file with the previous rates if it exists.
     let mut lending_rates = load_rates();
