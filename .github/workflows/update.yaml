@@ -36,6 +36,7 @@ jobs:
 
       - name: Push
         run: |
+          test -z "$(git status --porcelain)" && exit 0
           git add .
           git commit -m "Update dataset and graph" -m "Updates the rate dataset and the graph with new values."
           git push origin main
