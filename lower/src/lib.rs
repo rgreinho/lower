@@ -1,8 +1,8 @@
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-pub const RATE_FILE: &'static str = "lending-rates.json";
+pub const RATE_FILE: &str = "lending-rates.json";
 
 #[derive(Deserialize, Debug, Serialize, Clone, Copy, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -52,7 +52,7 @@ mod date_serializer {
     use chrono::NaiveDateTime;
     use serde::{de::Error, Deserialize, Deserializer, Serialize, Serializer};
 
-    pub const DATE_FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S";
+    pub const DATE_FORMAT: &str = "%Y-%m-%dT%H:%M:%S";
 
     pub fn serialize<S>(dt: &NaiveDateTime, serializer: S) -> Result<S::Ok, S::Error>
     where
