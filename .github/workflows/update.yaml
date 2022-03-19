@@ -1,0 +1,41 @@
+name: Update
+on:
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  date:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: Swatinem/rust-cache@v1
+
+
+      - name: Update the rate dataset
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: -p rates
+
+      - name: Update the graph
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: -p graph
+
+      - name: Setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+
+      - name: Push
+        run: |
+          git add .
+          git commit -m "Update dataset and graph" -m "Updates the rate dataset and the graph with new values."
+          git push origin main
