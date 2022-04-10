@@ -9,4 +9,4 @@ edition = "2021"
 chrono = "0.4.19"
 color-eyre = "0.6.1"
 lower = { path="../lower" }
-poloto = "9.3.2"
+poloto = "11.1.6"
