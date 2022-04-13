@@ -1,7 +1,9 @@
 name: Update
 on:
   schedule:
-    - cron: "0 */12 * * *"
+    # Scheduled times are UTC.
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule=
+    - cron: "0 */4 * * *"
 
 jobs:
   rate:
