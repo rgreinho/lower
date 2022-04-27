@@ -47,7 +47,7 @@ fn main() -> Result<(), Report> {
     // Write the graph to disk.
     std::fs::write(
         "graph.svg",
-        format!("{}", poloto::disp(|w| plotter.simple_theme(w))),
+        format!("{}", poloto::disp(|w| plotter.simple_theme_dark(w))),
     )?;
 
     Ok(())
