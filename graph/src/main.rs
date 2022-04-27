@@ -9,29 +9,20 @@ use poloto::prelude::*;
 fn main() -> Result<(), Report> {
     // Load all the rates.
     let rates = load_rates();
-    let min_rate = rates
-        .iter()
-        .map(|r| r.rate)
-        .fold(f64::INFINITY, |a, b| a.min(b));
-    let max_rate = rates.iter().map(|r| r.rate).fold(0.0, |a: f64, b| a.max(b));
-    // dbg!(&max_rate);
-    let min_boundary = min_rate.floor() as i64 * 4;
-    let max_boundary = max_rate.ceil() as i64 * 4;
-    // dbg!(&min_boundary);
-    // dbg!(&max_boundary);
 
+    // Select only lower.com 30 year purchase rates.
     let purchase_30 = get_term_data(&rates, 30);
-    let purchase_20 = get_term_data(&rates, 20);
-    let purchase_15 = get_term_data(&rates, 15);
-    // dbg!(&purchase_30);
 
+    // Extract the min amd max rate.
+    let (min_rate, max_rate) = min_max(&purchase_30);
+    let min_boundary = min_rate.floor() as i64 * 8;
+    let max_boundary = max_rate.ceil() as i64 * 8;
+
+    // Create the line
     let l1 = line("30 years", purchase_30);
-    let l2 = line("20 years", purchase_20);
-    let l3 = line("15 years", purchase_15);
 
     let m = poloto::build::markers([], [min_rate.floor()]);
-    // let data = plots!(l1, l2, l3, m);
-    let data = poloto::data(plots!(l1, l2, l3, m));
+    let data = poloto::data(plots!(l1, m));
 
     let opt = poloto::render::render_opt_builder()
         .with_tick_lines([true, true])
@@ -39,7 +30,7 @@ fn main() -> Result<(), Report> {
     let (by, _) = poloto::ticks::bounds(&data, &opt);
     let xtick_fmt = poloto::ticks::from_default(by);
     let ytick_fmt =
-        poloto::ticks::from_iter((min_boundary..=max_boundary).map(|x| x as f64 * 0.25));
+        poloto::ticks::from_iter((min_boundary..=max_boundary).map(|x| x as f64 * 0.125));
 
     let plotter = poloto::plot_with(
         data,
@@ -56,7 +47,7 @@ fn main() -> Result<(), Report> {
     // Write the graph to disk.
     std::fs::write(
         "graph.svg",
-        format!("{}", poloto::disp(|w| plotter.simple_theme_dark(w))),
+        format!("{}", poloto::disp(|w| plotter.simple_theme(w))),
     )?;
 
     Ok(())
@@ -74,4 +65,11 @@ fn get_term_data(rates: &[LendingRates], term: u8) -> Vec<(UnixTime, f64)> {
             )
         })
         .collect::<Vec<(UnixTime, f64)>>()
+}
+
+fn min_max(rates: &[(UnixTime, f64)]) -> (f64, f64) {
+    let it = rates.iter().map(|r| r.1);
+    let min_rate = it.clone().fold(f64::INFINITY, |a, b| a.min(b));
+    let max_rate = it.fold(0.0, |a: f64, b| a.max(b));
+    (min_rate, max_rate)
 }
