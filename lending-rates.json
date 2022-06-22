@@ -3562,5 +3562,59 @@
     "currentAsOfDate": "2022-06-20T15:38:35",
     "loanType": "purchase",
     "rate": 5.5
+  },
+  {
+    "lender": "lower",
+    "term": 20,
+    "apr": 5.652,
+    "discountPoints": 1.75,
+    "currentAsOfDate": "2022-06-21T17:29:22",
+    "loanType": "refinance",
+    "rate": 5.375
+  },
+  {
+    "lender": "lower",
+    "term": 15,
+    "apr": 5.231,
+    "discountPoints": 2.63,
+    "currentAsOfDate": "2022-06-21T17:27:29",
+    "loanType": "refinance",
+    "rate": 4.75
+  },
+  {
+    "lender": "lower",
+    "term": 30,
+    "apr": 5.845,
+    "discountPoints": 1.88,
+    "currentAsOfDate": "2022-06-21T17:26:51",
+    "loanType": "refinance",
+    "rate": 5.625
+  },
+  {
+    "lender": "lower",
+    "term": 20,
+    "apr": 5.699,
+    "discountPoints": 2.13,
+    "currentAsOfDate": "2022-06-21T17:20:48",
+    "loanType": "purchase",
+    "rate": 5.375
+  },
+  {
+    "lender": "lower",
+    "term": 15,
+    "apr": 5.358,
+    "discountPoints": 2.63,
+    "currentAsOfDate": "2022-06-21T17:18:15",
+    "loanType": "purchase",
+    "rate": 4.875
+  },
+  {
+    "lender": "lower",
+    "term": 30,
+    "apr": 5.801,
+    "discountPoints": 2.75,
+    "currentAsOfDate": "2022-06-21T17:14:14",
+    "loanType": "purchase",
+    "rate": 5.5
   }
 ]
