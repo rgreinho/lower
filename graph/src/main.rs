@@ -1,28 +1,32 @@
-use chrono::TimeZone;
-use chrono::Utc;
+use chrono::{TimeZone, Utc};
 use color_eyre::{eyre::Report, Result};
 use lower::{load_rates, LendingRates, LoanType};
-use poloto::build::line;
-use poloto::num::timestamp::UnixTime;
-use poloto::prelude::*;
+use poloto::{build::line, num::timestamp::UnixTime, prelude::*};
 
 fn main() -> Result<(), Report> {
     // Load all the rates.
     let rates = load_rates();
 
     // Select only lower.com 30 year purchase rates.
-    let purchase_30 = get_term_data(&rates, 30);
+    let purchase_30 = get_rate_terms(&rates, 30, LoanType::Purchase);
+    let refinance_30 = get_rate_terms(&rates, 30, LoanType::Refinance);
 
     // Extract the min amd max rate.
-    let (min_rate, max_rate) = min_max(&purchase_30);
-    let min_boundary = min_rate.floor() as i64 * 8;
-    let max_boundary = max_rate.ceil() as i64 * 8;
+    let (p30_min_rate, p30_max_rate) = min_max(&purchase_30);
+    let _p30_min_boundary = p30_min_rate.floor() as i64 * 8;
+    let _p30_max_boundary = p30_max_rate.ceil() as i64 * 8;
+    let (r30_min_rate, r30_max_rate) = min_max(&refinance_30);
+    let _r30_min_boundary = r30_min_rate.floor() as i64 * 8;
+    let _r30_max_boundary = r30_max_rate.ceil() as i64 * 8;
+    let min_boundary = p30_min_rate.min(r30_min_rate) as i64 * 8;
+    let max_boundary = p30_max_rate.max(r30_max_rate) as i64 * 8;
 
     // Create the line
-    let l1 = line("30 years", purchase_30);
+    let _l1 = line("Purchase 30", purchase_30);
+    let l2 = line("Refinance 30", refinance_30);
 
-    let m = poloto::build::markers([], [min_rate.floor()]);
-    let data = poloto::data(plots!(l1, m));
+    let m = poloto::build::markers([], []);
+    let data = poloto::data(plots!(l2, m));
 
     let opt = poloto::render::render_opt_builder()
         .with_tick_lines([true, true])
@@ -53,15 +57,15 @@ fn main() -> Result<(), Report> {
     Ok(())
 }
 
-fn get_term_data(rates: &[LendingRates], term: u8) -> Vec<(UnixTime, f64)> {
+fn get_rate_terms(rates: &[LendingRates], term: u8, loan_type: LoanType) -> Vec<(UnixTime, f64)> {
     rates
         .iter()
         .filter(|e| e.term == term)
-        .filter(|e| e.loan_type == LoanType::Purchase)
+        .filter(|e| e.loan_type == loan_type)
         .map(|e| {
             (
                 UnixTime::from(Utc.from_utc_date(&e.current_as_of_date.date())),
-                e.rate,
+                e.apr,
             )
         })
         .collect::<Vec<(UnixTime, f64)>>()

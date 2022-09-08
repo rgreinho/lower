@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 pub const RATE_FILE: &str = "lending-rates.json";
 
-#[derive(Deserialize, Debug, Serialize, Clone, Copy, PartialEq)]
+#[derive(Deserialize, Debug, Serialize, Clone, Copy, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub enum LoanType {
     Purchase,
