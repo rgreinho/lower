@@ -8,25 +8,32 @@ fn main() -> Result<(), Report> {
     let rates = load_rates();
 
     // Select only lower.com 30 year purchase rates.
-    let purchase_30 = get_rate_terms(&rates, 30, LoanType::Purchase);
+    let _purchase_30 = get_rate_terms(&rates, 30, LoanType::Purchase);
+    let refinance_15 = get_rate_terms(&rates, 15, LoanType::Refinance);
+    let refinance_20 = get_rate_terms(&rates, 20, LoanType::Refinance);
     let refinance_30 = get_rate_terms(&rates, 30, LoanType::Refinance);
+    let refinance_all_ = vec![
+        refinance_15.clone(),
+        refinance_20.clone(),
+        refinance_30.clone(),
+    ];
+    let refinance_all = refinance_all_
+        .into_iter()
+        .flatten()
+        .collect::<Vec<(UnixTime, f64)>>();
 
     // Extract the min amd max rate.
-    let (p30_min_rate, p30_max_rate) = min_max(&purchase_30);
-    let _p30_min_boundary = p30_min_rate.floor() as i64 * 8;
-    let _p30_max_boundary = p30_max_rate.ceil() as i64 * 8;
-    let (r30_min_rate, r30_max_rate) = min_max(&refinance_30);
-    let _r30_min_boundary = r30_min_rate.floor() as i64 * 8;
-    let _r30_max_boundary = r30_max_rate.ceil() as i64 * 8;
-    let min_boundary = p30_min_rate.min(r30_min_rate) as i64 * 8;
-    let max_boundary = p30_max_rate.max(r30_max_rate) as i64 * 8;
+    let (refi_min_rate, refi_max_rate) = min_max(&refinance_all);
+    let min_boundary = refi_min_rate.floor() as i64 * 8;
+    let max_boundary = refi_max_rate.ceil() as i64 * 8;
 
     // Create the line
-    let _l1 = line("Purchase 30", purchase_30);
-    let l2 = line("Refinance 30", refinance_30);
+    let l1 = line("Refinance 15", refinance_15);
+    let l2 = line("Refinance 20", refinance_20);
+    let l3 = line("Refinance 30", refinance_30);
 
     let m = poloto::build::markers([], []);
-    let data = poloto::data(plots!(l2, m));
+    let data = poloto::data(plots!(l1, l2, l3, m));
 
     let opt = poloto::render::render_opt_builder()
         .with_tick_lines([true, true])
