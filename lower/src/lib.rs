@@ -31,7 +31,7 @@ pub struct LendingRates {
     pub discount_points: f64,
     #[serde(with = "date_serializer")]
     pub current_as_of_date: NaiveDateTime,
-    pub loan_type: LoanType,
+    pub loan_type: Option<LoanType>,
     pub rate: f64,
 }
 
