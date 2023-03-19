@@ -68,7 +68,7 @@ fn get_rate_terms(rates: &[LendingRates], term: u8, loan_type: LoanType) -> Vec<
     rates
         .iter()
         .filter(|e| e.term == term)
-        .filter(|e| e.loan_type == loan_type)
+        .filter(|e| e.loan_type == Some(loan_type))
         .map(|e| {
             (
                 UnixTime::from(Utc.from_utc_date(&e.current_as_of_date.date())),
